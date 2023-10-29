@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > Room</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.younesmeskafe.MeetingPlanner.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Room (com.younesmeskafe.MeetingPlanner.domain)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Room</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (12/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92%
+  </span>
+  <span class="absValue">
+    (46/50)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.younesmeskafe.MeetingPlanner.domain;
+&nbsp;
+&nbsp;
+&nbsp;import java.time.DayOfWeek;
+&nbsp;import java.time.Duration;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.Objects;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;public class Room {
+&nbsp;    private long id;
+&nbsp;
+&nbsp;    private String name;
+&nbsp;    private int capacity;
+&nbsp;
+&nbsp;    private Set&lt;MeetingType&gt; supportedMeetingTypes;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public Room(long id, String name, Set&lt;Equipment&gt; equipment, int capacity) {</b>
+<b class="fc">&nbsp;        this.id = id;</b>
+<b class="fc">&nbsp;        this.name = name;</b>
+<b class="fc">&nbsp;        this.capacity = capacity;</b>
+<b class="fc">&nbsp;        this.supportedMeetingTypes = determineSupportedMeetingTypes(equipment);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public long getId() {
+<b class="fc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(long id) {
+<b class="fc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getName() {
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setName(String name) {
+<b class="nc">&nbsp;        this.name = name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getCapacity() {
+<b class="fc">&nbsp;        return capacity;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCapacity(int capacity) {
+<b class="nc">&nbsp;        this.capacity = capacity;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Set&lt;MeetingType&gt; getSupportedMeetingTypes() {
+<b class="fc">&nbsp;        return supportedMeetingTypes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSupportedMeetingTypes(Set&lt;MeetingType&gt; supportedMeetingTypes) {
+<b class="nc">&nbsp;        this.supportedMeetingTypes = supportedMeetingTypes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object o) {
+<b class="fc">&nbsp;        if (this == o) return true;</b>
+<b class="fc">&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="fc">&nbsp;        Room room = (Room) o;</b>
+<b class="fc">&nbsp;        return id == room.id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        return Objects.hash(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Set&lt;MeetingType&gt; determineSupportedMeetingTypes(Set&lt;Equipment&gt; equipment) {
+<b class="fc">&nbsp;        Set&lt;MeetingType&gt; supportedMeetingTypes = new HashSet&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // Check if the room has the required equipment for each meeting type
+<b class="fc">&nbsp;        if (equipment.contains(Equipment.SCREEN) &amp;&amp; equipment.contains(Equipment.PROJECTOR) &amp;&amp; equipment.contains(Equipment.WEBCAM)) {</b>
+<b class="fc">&nbsp;            supportedMeetingTypes.add(MeetingType.VC);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (equipment.contains(Equipment.WHITEBOARD)) {</b>
+<b class="fc">&nbsp;            supportedMeetingTypes.add(MeetingType.SPEC);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (capacity &gt; 3) {</b>
+<b class="fc">&nbsp;            supportedMeetingTypes.add(MeetingType.RS);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (equipment.contains(Equipment.SCREEN) &amp;&amp; equipment.contains(Equipment.WHITEBOARD) &amp;&amp; equipment.contains(Equipment.PROJECTOR)) {</b>
+<b class="fc">&nbsp;            supportedMeetingTypes.add(MeetingType.RC);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return supportedMeetingTypes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean canAccommodateMeeting(MeetingType meetingType) {
+<b class="fc">&nbsp;        return supportedMeetingTypes.contains(meetingType);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public boolean hasCapacityFor(int attendees) {
+<b class="fc">&nbsp;        return attendees &lt;= (int) (capacity * 0.7);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isValidTimeslot(String timeslot) {
+&nbsp;        // Accepted timeslot format is &quot;hh:mm-hh:mm&quot; (e.g., &quot;08:00-20:00&quot;)
+<b class="fc">&nbsp;        String[] parts = timeslot.split(&quot;-&quot;);</b>
+<b class="fc">&nbsp;        if (parts.length != 2) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        String startTime = parts[0];</b>
+<b class="fc">&nbsp;        String endTime = parts[1];</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            LocalTime start = LocalTime.parse(startTime);</b>
+<b class="fc">&nbsp;            LocalTime end = LocalTime.parse(endTime);</b>
+&nbsp;
+&nbsp;            // Ensure the timeslot is  one hour in length or less
+<b class="fc">&nbsp;            if (Duration.between(start, end).toMinutes() &gt; 60) {</b>
+<b class="fc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Check if start time is after or equal to 8:00 AM
+<b class="fc">&nbsp;            if (start.isBefore(LocalTime.of(8, 0))) {</b>
+<b class="fc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Check if end time is before or equal to 8:00 PM
+<b class="fc">&nbsp;            if (end.isAfter(LocalTime.of(20, 0))) {</b>
+<b class="fc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isValidReservationDate(LocalDate reservationDate) {
+&nbsp;        // Check if the reservation date is a weekend
+<b class="fc">&nbsp;        DayOfWeek dayOfWeek = reservationDate.getDayOfWeek();</b>
+<b class="fc">&nbsp;        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 00:16</div>
+</div>
+</body>
+</html>

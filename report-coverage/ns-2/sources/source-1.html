@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > MeetingServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.younesmeskafe.MeetingPlanner.adapters</a>
+</div>
+
+<h1>Coverage Summary for Class: MeetingServiceImpl (com.younesmeskafe.MeetingPlanner.adapters)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MeetingServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.younesmeskafe.MeetingPlanner.adapters;
+&nbsp;
+&nbsp;import com.younesmeskafe.MeetingPlanner.adapters.ports.MeetingService;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.*;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.output.MeetingRepository;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.output.RoomRepository;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.Comparator;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class MeetingServiceImpl implements MeetingService {</b>
+&nbsp;    @Autowired
+&nbsp;    private RoomRepository roomRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private MeetingRepository meetingRepository;
+&nbsp;
+<b class="fc">&nbsp;    Logger logger = LoggerFactory.getLogger(MeetingServiceImpl.class);</b>
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String findBestRoom(int attendees, String meetingType, String timeslot, LocalDate reservationDate) {
+<b class="fc">&nbsp;        MeetingType meetingTypEnum = MeetingType.valueOf(meetingType);</b>
+<b class="fc">&nbsp;        Comparator&lt;Room&gt; roomComparator = Comparator</b>
+<b class="fc">&nbsp;                .comparingInt((Room room) -&gt; room.getSupportedMeetingTypes().size())</b>
+<b class="fc">&nbsp;                .thenComparingInt(Room::getCapacity);</b>
+<b class="fc">&nbsp;        List&lt;Room&gt; availableRooms = roomRepository.findAll()</b>
+<b class="fc">&nbsp;            .stream()</b>
+<b class="fc">&nbsp;                .filter(room -&gt; room.hasCapacityFor(attendees))</b>
+<b class="fc">&nbsp;                .filter(room -&gt; room.canAccommodateMeeting(meetingTypEnum))</b>
+<b class="fc">&nbsp;                .filter(room -&gt; room.isValidTimeslot(timeslot))</b>
+<b class="fc">&nbsp;                .filter(room -&gt; isAvailableAt(timeslot,room,reservationDate))</b>
+<b class="fc">&nbsp;                .filter(room -&gt; room.isValidReservationDate(reservationDate))</b>
+<b class="fc">&nbsp;                .sorted(roomComparator)</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;
+<b class="fc">&nbsp;        if (availableRooms.isEmpty()) {</b>
+<b class="fc">&nbsp;            throw new MeetingNotFoundException(&quot;No suitable room found.&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Meeting meeting = new Meeting(meetingRepository.findAll().size(),reservationDate, timeslot, meetingTypEnum, attendees, availableRooms.get(0));</b>
+&nbsp;
+<b class="fc">&nbsp;        meetingRepository.save(meeting);</b>
+<b class="fc">&nbsp;        logger.info(&quot;Meeting saved. Total meetings: {}&quot;, meetingRepository.findAll().size());</b>
+<b class="fc">&nbsp;        return availableRooms.get(0).getName();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isAvailableAt(String timeslot,Room room,LocalDate reservationDate){
+<b class="fc">&nbsp;        List&lt;Meeting&gt; meetings = meetingRepository.findAll();</b>
+&nbsp;
+<b class="fc">&nbsp;        for (Meeting meeting : meetings) {</b>
+<b class="fc">&nbsp;            if (meeting.getRoom().equals(room)) {</b>
+<b class="fc">&nbsp;                String meetingTimeslot = meeting.getTimeslot();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;                if (meeting.getDate().equals(reservationDate) &amp;&amp; meetingTimeslot.equals(timeslot)) {</b>
+<b class="fc">&nbsp;                    return false; // Room is already booked at this timeslot</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                // Check if there&#39;s at least a 1-hour gap before the next reservation
+<b class="fc">&nbsp;                if (meetingTimeslot.endsWith(timeslot.split(&quot;-&quot;)[0]) || meetingTimeslot.startsWith(timeslot.split(&quot;-&quot;)[1])) {</b>
+<b class="fc">&nbsp;                    return false; // Less than 1-hour gap</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 00:16</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > MeetingRepositoryImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.younesmeskafe.MeetingPlanner.adapters.memory</a>
+</div>
+
+<h1>Coverage Summary for Class: MeetingRepositoryImpl (com.younesmeskafe.MeetingPlanner.adapters.memory)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MeetingRepositoryImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.younesmeskafe.MeetingPlanner.adapters.memory;
+&nbsp;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.Equipment;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.Meeting;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.MeetingType;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.Room;
+&nbsp;import com.younesmeskafe.MeetingPlanner.domain.output.MeetingRepository;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class MeetingRepositoryImpl implements MeetingRepository {</b>
+<b class="fc">&nbsp;    LocalDate date = LocalDate.of(2023, 10, 27);</b>
+<b class="fc">&nbsp;    private List&lt;Meeting&gt; meetings = new ArrayList&lt;&gt;(Arrays.asList(</b>
+<b class="fc">&nbsp;            new Meeting(1, date, &quot;08:00-09:00&quot;, MeetingType.RS, 10, new Room(1001, &quot;E1001&quot;, new HashSet&lt;&gt;(Collections.singletonList(Equipment.NEANT)), 23))</b>
+&nbsp;    ));
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    private long nextId = 1;</b>
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Meeting&gt; findAll() {
+<b class="fc">&nbsp;        return new ArrayList&lt;&gt;(meetings);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Meeting findById(long id) {
+<b class="fc">&nbsp;        for (Meeting meeting : meetings) {</b>
+<b class="fc">&nbsp;            if (meeting.getId() == id) {</b>
+<b class="fc">&nbsp;                return meeting;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void save(Meeting meeting) {
+<b class="fc">&nbsp;        meeting.setId(nextId++);</b>
+<b class="fc">&nbsp;        meetings.add(meeting);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void delete(long id) {
+<b class="fc">&nbsp;        meetings.removeIf(meeting -&gt; meeting.getId() == id);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 00:16</div>
+</div>
+</body>
+</html>
